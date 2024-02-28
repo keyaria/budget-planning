@@ -39,6 +39,37 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Log In Test User
+
+email: testuser@gmail.com
+password: "testpassword"
+
 ## Process
 
-## Technical Descisions
+1. Designed Basic DB structure Using Prisma
+2. Set up TrpC handling and zod validation schemas
+3. Set Up API Calls with Prisma Client and trpc
+4. Created Base Structure for Front End application
+5. Connected to API and set up tables.
+6. Didnt Get To: Brush up styling and make more visually modern.
+
+### Time
+
+### Improvements
+
+- Add more validation on the frontEnd Side
+- Create A better central user managament system
+- Add converter for money and handler to deal with cash inputs.
+- Add Cypress and Jest testing so there is E2E tests
+
+### Known Issues
+
+- Edit Modal
+
+## Technical Stack
+
+- SuperBase
+- Prisma
+- TrPC
+- NextJS
+- Mantine UI

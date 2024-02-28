@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form";
-import { TextInput, Box, Button, Modal } from "@mantine/core";
+import { TextInput, Box, Button, Modal, Space } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -43,7 +43,12 @@ export default function addModal() {
 
   return (
     <>
-      <Modal opened={openedModal} onClose={close} title="Add To Spend" centered>
+      <Modal
+        opened={openedModal}
+        onClose={close}
+        title="Add New Category"
+        centered
+      >
         <form>
           <Box maw={320} mx="auto">
             <TextInput
@@ -56,6 +61,8 @@ export default function addModal() {
               placeholder="Color"
               {...form.getInputProps("color")}
             />
+            <Space h="md" />
+
             <Button onClick={submitData}>Add Category</Button>
           </Box>
         </form>

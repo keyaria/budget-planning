@@ -15,7 +15,7 @@ export default function CategorySection(categories: any) {
   return (
     <>
       {categories.categories.map((category: any) => {
-        return <Pill>{category.name}</Pill>;
+        return <Pill bg={category.color}>{category.name}</Pill>;
       })}
     </>
   );

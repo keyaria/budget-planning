@@ -80,7 +80,6 @@ export default function ExpenseTable({ allExpenses }: any) {
       header: "Category",
     },
   ];
-  console.log("all", allExpenses);
   //UPDATE action
   const handleSaveUser: MRT_TableOptions<Expenses>["onEditingRowSave"] =
     async ({ values, table }) => {};
@@ -106,7 +105,7 @@ export default function ExpenseTable({ allExpenses }: any) {
     data: allExpenses ?? [],
     rowCount: allExpenses?.length ?? 0,
     enableTopToolbar: false,
-    createDisplayMode: "modal", //default ('row', and 'custom' are also available)
+    createDisplayMode: "modal",
     editDisplayMode: "modal",
     enableRowActions: true,
     enableEditing: true,
@@ -150,13 +149,8 @@ export default function ExpenseTable({ allExpenses }: any) {
   });
 
   return (
-    <Card radius="md">
-      <Card.Section>
-        <Title order={5}>Transactions</Title>
-      </Card.Section>
-      <Card.Section>
-        <MRT_Table table={table} />
-      </Card.Section>
+    <Card title="Expenses">
+      <MRT_Table table={table} />
     </Card>
   );
 }

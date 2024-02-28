@@ -69,7 +69,6 @@ export default function addModal({ categories }: any) {
 
     // @ts-ignore
     form.values.category = cat.id;
-    console.log("form", form.values, cat);
 
     //@ts-ignore
     mutate(form.values);

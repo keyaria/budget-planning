@@ -1,44 +1,41 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
+
 import {
   AppShell,
-  Burger,
   Flex,
   Grid,
   GridCol,
-  Title,
   Text,
   Button,
-  Modal,
-  PasswordInput,
   Select,
-  TextInput,
   Space,
   LoadingOverlay,
+  Tooltip,
+  UnstyledButton,
+  rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CategorySection from "@/components/CategorySection";
 
 import { useEffect, useState } from "react";
-import classes from "@/components/Dashboard.module.css";
 import { BarChart } from "@mantine/charts";
-import { Form } from "@mantine/form";
 import AddModal from "@/components/AddModal";
 import ExpenseTable from "@/components/ExpenseTable";
 import Card from "@/components/common/Card";
-import { Category, Expenses } from "@prisma/client";
 import AddCategoryModal from "@/components/AddCategoryModal";
 import { trpc } from "@/utils/trpc";
+import { IconHome2 } from "@tabler/icons-react";
 
 export default function Home() {
-  //let { data, isLoading, isFetching } = trpc.healthchecker.useQuery();
-
   const [opened, { toggle }] = useDisclosure();
   const [salesByMonth, setSalesByMonth]: any = useState(0);
   const [date, setdate] = useState();
-  const { data: allExpenses, isLoading: loadingExpenses } =
-    trpc.getExpenses.useQuery({ skip: 0, take: 5 });
+  const {
+    data: allExpenses,
+    isLoading: loadingExpenses,
+    isError,
+    error: expensesError,
+  } = trpc.getExpenses.useQuery({ skip: 0, take: 5 });
   const { data: allCategories } = trpc.getCategory.useQuery({
     skip: 0,
     take: 5,
@@ -53,12 +50,10 @@ export default function Home() {
     error(...args);
   };
 
-  console.log("expenses", allExpenses);
-
   useEffect(() => {
     if (allExpenses) {
       const sbM = allExpenses.data.expenses.reduce(
-        (result: any, { date, amount, category }: any) => {
+        (result: any, { amount }: any) => {
           result = (result || 0) + amount;
 
           return result;
@@ -66,41 +61,27 @@ export default function Home() {
         0,
       );
 
-      console.log("sbm", sbM);
-
-      // console.log("sadsd", sbMt);
-
       setSalesByMonth(sbM);
       configureChartData("month");
     }
   }, [allExpenses]);
 
-  const cardStyle = {
-    boxShadow: "rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px",
-  };
-
   const configureChartData = (time: string) => {
     const chartData = allExpenses?.data.expenses.reduce(
       (result: any, { category, amount, date }: any) => {
-        console.log("result", result);
-        // @ts-ignore
-        let month: any;
+        let dateTime: string;
         if (time === "month") {
-          month = date.toLocaleString("default", { month: "long" });
+          dateTime = date.toLocaleString("default", { month: "long" });
         } else if (time === "day") {
-          month = date.toLocaleString("default", { weekday: "short" });
+          dateTime = date.toLocaleString("default", { weekday: "short" });
         } else {
-          month = date.toLocaleString("default", { year: "numeric" });
+          dateTime = date.toLocaleString("default", { year: "numeric" });
         }
-        const found = result.find((a: any) => a.month === month);
-        //const value = { name: d.name, val: d.value };
-        const value = { [category.name]: amount }; // the element in data property
+        const found = result.find((a: any) => a.month === dateTime);
+
         if (!found) {
-          //acc.push(...value);
-          result.push({ month: month, [category.name]: amount }); // not found, so need to add data property
+          result.push({ month: dateTime, [category.name]: amount }); // not found, so need to add data property
         } else {
-          //acc.push({ name: d.name, data: [{ value: d.value }, { count: d.count }] });
-          console.log("dsas", result[found], found);
           found[category.name] = (found[category.name] || 0) + amount; // if found, that means data property exists, so just push new element to found.data.
         }
         return result;
@@ -114,6 +95,8 @@ export default function Home() {
   const nextPage = async () => {
     if (allExpenses) {
       const lastPostInResults: any = allExpenses.data.expenses[0];
+
+      // await getData({take: 2, skip: 1, myCursor: myCursor})
       const myCursor = lastPostInResults.id;
       //setAllExpenses(data);
     }
@@ -124,9 +107,8 @@ export default function Home() {
     setValue(value);
     configureChartData(value);
   };
-  //const session = await auth();
+
   return (
-    // <Hydrate state={dehydrate(helpers.queryClient)}>
     <AppShell
       header={{ height: 60 }}
       navbar={{
@@ -143,18 +125,26 @@ export default function Home() {
         overlayProps={{ radius: "sm", blur: 2 }}
       />
 
-      <AppShell.Header>
-        <div>Logo</div>
-      </AppShell.Header>
+      <AppShell.Header></AppShell.Header>
 
       <AppShell.Navbar p="md" bg={"rgb(248, 249, 250)"}>
-        Navbar
+        <Tooltip
+          label={"Home"}
+          position="right"
+          transitionProps={{ duration: 0 }}
+        >
+          <UnstyledButton>
+            <IconHome2
+              style={{ width: rem(20), height: rem(20) }}
+              stroke={1.5}
+            />
+          </UnstyledButton>
+        </Tooltip>
       </AppShell.Navbar>
 
       <AppShell.Main>
         <Grid>
           <GridCol>
-            {/* @ts-ignore */}
             <AddModal categories={allCategories?.data.result} />
 
             <AddCategoryModal />
@@ -195,13 +185,11 @@ export default function Home() {
 
           <GridCol span={12}>
             <ExpenseTable allExpenses={allExpenses?.data.expenses} />
-            <Button onClick={nextPage}>Prev Page</Button>
+            <Space h="md" />
             <Button onClick={nextPage}>Next Page</Button>
-            {/* <TransactionCard /> */}
           </GridCol>
         </Grid>
       </AppShell.Main>
     </AppShell>
-    // </Hydrate>
   );
 }
