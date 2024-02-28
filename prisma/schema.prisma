@@ -13,9 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Transactions {
-  id         String    @id @default(cuid())
-  title      String
+model Expenses {
+  id         String    @id @default(uuid())
+  name       String
+  amount     Int
   notes      String?
   date       DateTime
   createdAt  DateTime  @default(now()) @map(name: "created_at")
@@ -26,7 +27,7 @@ model Transactions {
 }
 
 model Category {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   name      String
   color     String
   createdAt DateTime @default(now()) @map(name: "created_at")
@@ -34,17 +35,17 @@ model Category {
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  String?
 
-  Transactions Transactions[]
+  Expenses Expenses[]
 }
 
 model User {
-  id           String         @id @default(cuid())
+  id           String         @id @default(uuid())
   name         String?        
   email        String?        @unique
   createdAt    DateTime       @default(now()) @map(name: "created_at")
   updatedAt    DateTime       @updatedAt @map(name: "updated_at")
-  transactions Transactions[]
+  expenses     Expenses[]
   Category     Category[]
 
-  @@map(name: "users")
+  @@map(name: "user")
 }

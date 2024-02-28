@@ -6,22 +6,45 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate-dev": "npx prisma migrate dev && npx tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@mantine/charts": "^7.5.3",
     "@mantine/core": "^7.5.3",
+    "@mantine/dates": "^7.5.3",
+    "@mantine/form": "^7.5.3",
     "@mantine/hooks": "^7.5.3",
+    "@mantine/modals": "^7.6.1",
     "@prisma/client": "^5.10.2",
     "@supabase/auth-helpers-nextjs": "^0.9.0",
     "@supabase/supabase-js": "^2.39.7",
+    "@tabler/icons-react": "^2.47.0",
+    "@tanstack/react-query": "4.18.0",
+    "@tanstack/react-query-devtools": "4.18.0",
+    "@trpc/client": "^10.45.1",
+    "@trpc/react-query": "^10.45.1",
+    "@trpc/server": "^10.45.1",
+    "class-validator": "^0.14.1",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.4.5",
     "install": "^0.13.0",
+    "mantine-react-table": "^2.0.0-beta.0",
     "next": "14.1.0",
+    "postgres": "^3.4.3",
     "prisma": "^5.10.2",
     "react": "^18",
     "react-dom": "^18",
-    "supabase": "^1.145.4"
+    "recharts": "2",
+    "reflect-metadata": "^0.2.1",
+    "supabase": "^1.145.4",
+    "superjson": "^2.2.1",
+    "tsx": "^4.7.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.20.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -30,6 +53,7 @@
     "postcss": "^8.4.35",
     "postcss-preset-mantine": "^1.13.0",
     "postcss-simple-vars": "^7.0.1",
+    "prettier": "3.2.5",
     "typescript": "^5"
   }
 }

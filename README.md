@@ -1,15 +1,16 @@
 # Budget Application
 
 TODO:
+
 - [x] Add SuperBase DB
 - [x] Set Up Log In
-- [ ] Add API
+- [x] Add API
 - [ ] Add Tests
-- [ ] Set Up Basic Layout
-- [ ] Add Styling
-- [ ] Add Final Details
+- [x] Set Up Basic Layout
+- [x] Add Styling
 
 ## Getting Started
+
 1. First, install the packages
 
 ```bash
@@ -41,4 +42,3 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 ## Process
 
 ## Technical Descisions
-
