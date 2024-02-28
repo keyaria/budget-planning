@@ -1,20 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
-// async function main() {
-//   await prisma.user.create({
-//     data: {
-//       email: `testemail@gmail.com`,
-//       role: 'ADMIN',
-//     },
-//   })
-
-//   await prisma.category.createMany({
-//     //data: links,
-//   })
-// }
-
-
 import postgres from "postgres";
 import "dotenv/config";
 
@@ -64,3 +49,17 @@ async function main() {
 }
 
 main();
+
+//seed User
+// async function main() {
+//   await prisma.user.create({
+//     data: {
+//       email: `testemail@gmail.com`,
+//       role: 'ADMIN',
+//     },
+//   })
+
+//   await prisma.category.createMany({
+//     //data: links,
+//   })
+// }

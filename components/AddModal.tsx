@@ -18,7 +18,7 @@ import queryClient from "@/utils/query-client";
 interface FormValues {
   name: string;
   amount: number;
-  date: number;
+  date: number | null;
   notes: string;
   category: Category | null;
 }
@@ -45,7 +45,7 @@ export default function addModal({ categories }: any) {
     initialValues: {
       name: "",
       amount: 0,
-      date: Date.now(),
+      date: null,
       notes: "",
       category: null,
     },
