@@ -11,6 +11,7 @@ TODO:
 
 ## Getting Started
 
+
 1. First, install the packages
 
 ```bash
@@ -35,11 +36,13 @@ pnpm dev
 bun dev
 ```
 
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Log In Test User
+Link to information for env file: https://docs.google.com/document/d/1_y8B_il5FGY1lNv15eS6pXflb-MJNSwpVTM0TqvuTg4/edit?usp=sharing
 email: testuser@gmail.com
 password: "testpassword"
 
