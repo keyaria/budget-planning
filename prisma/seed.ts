@@ -2,6 +2,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import postgres from "postgres";
 import "dotenv/config";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/lib/database.types";
+const supabase = createClientComponentClient<Database>();
 
 const dbUrl = process.env.DATABASE_URL;
 
@@ -44,6 +47,19 @@ async function main() {
      `;
 
   console.log("Finished adding triggers and functions for profile handling.");
+
+  //   await supabase.auth.signUp({
+  //     email: `testemail@gmail.com`,
+  //     password: 'testpassword',
+
+  //   });
+
+  //   await prisma.category.createMany({
+  //     data: [{
+  //         name: 'Travel',
+  //         color: 'green'
+  //     }],
+  //   })
 
   process.exit();
 }

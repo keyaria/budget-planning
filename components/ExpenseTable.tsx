@@ -1,8 +1,6 @@
 import {
   MRT_ColumnDef,
-  MRT_EditActionButtons,
   MRT_Row,
-  MRT_Table,
   MRT_TableOptions,
   MantineReactTable,
 } from "mantine-react-table";
@@ -13,9 +11,7 @@ import { ModalsProvider, modals } from "@mantine/modals";
 
 import {
   IconEdit,
-  IconShare,
   IconTrash,
-  IconUser,
   IconArrowRight,
   IconArrowLeft,
 } from "@tabler/icons-react";
@@ -24,7 +20,6 @@ import { Expenses } from "@prisma/client";
 import { useMemo, useState } from "react";
 import queryClient from "@/utils/query-client";
 import { trpc } from "@/utils/trpc";
-import { editExpense } from "@/lib/actions";
 
 type Expense = {
   id: string;
@@ -112,7 +107,7 @@ export default function ExpenseTable({
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Expenses>) =>
     modals.openConfirmModal({
-      title: "Are you sure you want to delete this user?",
+      title: "Are you sure you want to delete this Expense",
       children: (
         <Text>
           Are you sure you want to delete {row.original.name}? This action
@@ -129,16 +124,14 @@ export default function ExpenseTable({
     row,
     values,
   }) => {
-    console.log("values", values, row);
     editMutate(values);
     //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
     tableData[row.index] = values;
-    //send/receive api updates here
+
     setTableData([...tableData]);
     table.setEditingRow(null); //exit editing mode
   };
   const table = useCustomTable({
-    // @ts-ignore
     columns,
     data: allExpenses ?? [],
     rowCount: allExpenses?.length ?? 0,
@@ -181,7 +174,7 @@ export default function ExpenseTable({
     if (allExpenses) {
       const lastPostInResults: any = allExpenses[0];
       const myCursor = lastPostInResults.id;
-      setPagintion({ skip: 1, take: 1, myCursor: myCursor });
+      setPagintion({ skip: 1, take: 5, myCursor: myCursor });
     }
   };
 
@@ -190,7 +183,7 @@ export default function ExpenseTable({
       const lastPostInResults: any = allExpenses[0];
       const myCursor = lastPostInResults.id;
 
-      setPagintion({ skip: 0, take: 1, myCursor: myCursor });
+      setPagintion({ skip: 0, take: 5, myCursor: myCursor });
     }
   };
 

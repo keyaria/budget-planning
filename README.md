@@ -65,7 +65,7 @@ password: "testpassword"
 
 ### Known Issues
 
-- Edit Modal
+- Pagination shifts all data
 
 ## Technical Stack
 

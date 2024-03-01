@@ -10,13 +10,7 @@ import {
   Select,
   Space,
   LoadingOverlay,
-  Tooltip,
-  UnstyledButton,
-  rem,
-  Center,
-  Stack,
   Avatar,
-  Group,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CategorySection from "@/components/CategorySection";
@@ -28,14 +22,11 @@ import ExpenseTable from "@/components/ExpenseTable";
 import Card from "@/components/common/Card";
 import AddCategoryModal from "@/components/AddCategoryModal";
 import { trpc } from "@/utils/trpc";
-import {
-  IconHome2,
-  IconLogout,
-  IconReceipt2,
-  IconSwitchHorizontal,
-} from "@tabler/icons-react";
-import classes from "./page.module.css";
+
 import Navbar from "@/components/Navbar";
+import { Database } from "@/lib/database.types";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [opened, { toggle }] = useDisclosure();
@@ -43,19 +34,14 @@ export default function Home() {
   const [date, setdate] = useState();
   const [pagination, setPagintion] = useState({
     skip: 0,
-    take: 2,
+    take: 5,
     myCursor: undefined,
   });
   const [categoryPagination, setCategoryPagination] = useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 3,
   });
 
-  // await prisma.post.findMany({
-  //   skip: (resultsPerPage * currentPageNumber),
-  //   take: resultsPerPage,
-  //   ...
-  // })
   const {
     data: allExpenses,
     isLoading: loadingExpenses,
@@ -63,6 +49,9 @@ export default function Home() {
     refetch,
     error: expensesError,
   } = trpc.getExpenses.useQuery(pagination);
+  const router = useRouter();
+  const supabase = createClientComponentClient<Database>();
+
   const { data: allCategories } = trpc.getCategory.useQuery(categoryPagination);
   const [value, setValue] = useState<string | null>("");
 
@@ -122,6 +111,10 @@ export default function Home() {
     setValue(value);
     configureChartData(value);
   };
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.refresh();
+  };
 
   return (
     <AppShell
@@ -144,7 +137,9 @@ export default function Home() {
         <Flex justify="right" align="center" px="1em" h="100%">
           <Avatar radius="xl" />
 
-          <Text>Sign Out</Text>
+          <Button onClick={handleSignOut} variant="transparent">
+            Sign Out
+          </Button>
         </Flex>
       </AppShell.Header>
 

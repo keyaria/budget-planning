@@ -1,56 +1,39 @@
 "use client";
-import { useForm } from "@mantine/form";
-import { ActionIcon, Flex, Pill, Tooltip } from "@mantine/core";
-import { useRouter } from "next/navigation";
+
+import { ActionIcon, Flex, Group } from "@mantine/core";
 import {
   MRT_ColumnDef,
   MRT_TableOptions,
   MantineReactTable,
 } from "mantine-react-table";
 import { useCustomTable } from "@/utils/hooks/use-custom-table";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { Category } from "@prisma/client";
 import { useState, useMemo } from "react";
 import { trpc } from "@/utils/trpc";
 import queryClient from "@/utils/query-client";
-
-interface FormValues {
-  name: string;
-  color: string;
-}
 
 export default function CategorySection({
   categories,
   pagination,
   setPagination,
 }: any) {
-  const form = useForm<FormValues>({ initialValues: { name: "", color: "" } });
-  const router = useRouter();
   const [tableData, setTableData] = useState(categories);
 
   const { mutate: editMutate } = trpc.editCategory.useMutation({
-    // onSettled: () => {
-    //   form.reset;
-    // },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [
           ["getCategory"],
-          { input: { take: 5, skip: 0 }, type: "query" },
+          { input: { take: 3, skip: 0 }, type: "query" },
         ],
       });
     },
   });
 
-  // const [pagination, setPagination] = useState({
-  //     pageIndex: 0,
-  //     pageSize: 1
-  // })
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
-
-  console.log("here", categories);
 
   const columns = useMemo<MRT_ColumnDef<Category>[]>(
     () => [
@@ -75,17 +58,14 @@ export default function CategorySection({
     row,
     values,
   }) => {
-    console.log("values", values, row);
     editMutate(values);
-    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
     tableData[row.index] = values;
-    //send/receive api updates here
+
     setTableData([...tableData]);
     table.setEditingRow(null); //exit editing mode
   };
 
   const table = useCustomTable({
-    // @ts-ignore
     columns,
     data: categories ?? [],
     rowCount: 2,
@@ -104,45 +84,36 @@ export default function CategorySection({
 
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleSaveRow,
-
-    // renderRowActions: ({ row, table }) => (
-    //   <Flex gap="md">
-    //     <Tooltip label="Edit">
-    //       <ActionIcon onClick={() => table.setEditingRow(row)}>
-    //         <IconEdit />
-    //       </ActionIcon>
-    //     </Tooltip>
-    //     <Tooltip label="Delete">
-    //       <ActionIcon color="red" onClick={() => openDeleteConfirmModal(row)}>
-    //         <IconTrash />
-    //       </ActionIcon>
-    //     </Tooltip>
-    //   </Flex>
-    // ),
-
-    // renderRowActions: ({ row, table }) => (
-    //   <Flex gap="md">
-    //     <Tooltip label="Edit">
-    //       <ActionIcon onClick={() => handleSaveRow}>
-    //         <IconEdit />
-    //       </ActionIcon>
-    //     </Tooltip>
-    //     <Tooltip label="Delete">
-    //       {/* @ts-ignore */}
-    //       <ActionIcon color="red" key={1} onClick={() => openDeleteConfirmModal(row)}>
-    //         <IconTrash />
-    //       </ActionIcon>
-    //     </Tooltip>
-    //   </Flex>
-    // ),
-    initialState: {
-      pagination,
-    },
   });
 
+  const nextPage = async () => {
+    const lastPostInResults: any = categories[0];
+    const myCursor = lastPostInResults.id;
+    setPagination({ pageIndex: 1, pageSize: 1 });
+  };
+
+  const prevPage = async () => {
+    const lastPostInResults: any = categories[0];
+    const myCursor = lastPostInResults.id;
+
+    setPagination({ pageIndex: 0, pageSize: 1 });
+  };
+
   return (
-    <>
+    <Flex direction="column" w="100%">
       <MantineReactTable table={table} data={categories} />
-    </>
+
+      <Group justify="right">
+        <ActionIcon variant="filled" aria-label="Prev Page" onClick={prevPage}>
+          <IconArrowLeft style={{ width: "70%", height: "70%" }} stroke={1.5} />
+        </ActionIcon>
+        <ActionIcon variant="filled" aria-label="Next Page" onClick={nextPage}>
+          <IconArrowRight
+            style={{ width: "70%", height: "70%" }}
+            stroke={1.5}
+          />
+        </ActionIcon>
+      </Group>
+    </Flex>
   );
 }

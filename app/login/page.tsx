@@ -21,7 +21,6 @@ import {
 } from "@mantine/core";
 import classes from "@/app/page.module.css";
 
-import { upperFirst } from "@mantine/hooks";
 // import { type } from "os";
 import { useForm } from "@mantine/form";
 import { SignInWithPasswordlessCredentials } from "@supabase/supabase-js";
@@ -61,13 +60,9 @@ export default function Login() {
     if (error) {
       setErrorMessage(error.message);
     } else {
+      router.replace("/");
       router.refresh();
     }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh();
   };
 
   const form = useForm({
@@ -89,12 +84,6 @@ export default function Login() {
       <Title ta="center" className={classes.title}>
         Welcome back!
       </Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Do not have an account yet?{" "}
-        <Anchor size="sm" component="button">
-          Create account
-        </Anchor>
-      </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <TextInput
@@ -123,6 +112,10 @@ export default function Login() {
         </Group>
         <Button fullWidth mt="xl" onClick={handleSignIn}>
           Sign in
+        </Button>
+        <Divider label="Or Sign Up" labelPosition="center" my="lg" />
+        <Button fullWidth onClick={handleSignUp}>
+          Sign Up
         </Button>
       </Paper>
     </Container>

@@ -7,7 +7,6 @@ import {
   Space,
   ColorInput,
 } from "@mantine/core";
-import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 
 import { trpc } from "@/utils/trpc";
@@ -20,19 +19,20 @@ interface FormValues {
 
 export default function addModal() {
   //Add validation. Must be unique sent from DB add error message and
-  const { mutate, isLoading, error } = trpc.createCategory.useMutation({
-    onSettled: () => {
-      form.reset;
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [
-          ["getCategories"],
-          { input: { limit: 10, page: 1 }, type: "query" },
-        ],
-      });
-    },
-  });
+  const { mutate, isLoading, error, isError, isSuccess } =
+    trpc.createCategory.useMutation({
+      onSettled: () => {
+        form.reset;
+      },
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [
+            ["getCategories"],
+            { input: { limit: 10, page: 1 }, type: "query" },
+          ],
+        });
+      },
+    });
 
   const [openedModal, { open, close }] = useDisclosure(false);
   const form = useForm<FormValues>({
@@ -41,12 +41,19 @@ export default function addModal() {
       color: "",
     },
   });
-  const router = useRouter();
 
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     mutate(form.values);
+
+    if (isError) {
+      form.errors.name = "Not Unique";
+    }
+
+    if (isSuccess) {
+      close();
+    }
   };
 
   return (

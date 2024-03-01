@@ -53,9 +53,10 @@ export default function addModal({ categories }: any) {
   const router = useRouter();
 
   const openModal = async () => {
-    let items = categories.map((i: any) => {
+    let items = categories.map((i: Category) => {
       return i.name;
     });
+    // @ts-ignore
     setSelect(items);
     return open();
   };
@@ -66,7 +67,7 @@ export default function addModal({ categories }: any) {
     let cat = categories.find((i: any) => {
       return i["name"] === form.values.category;
     });
-    console.log("cate", categories, form.values.category);
+
     // @ts-ignore
     form.values.category = cat;
 
@@ -120,7 +121,7 @@ export default function addModal({ categories }: any) {
             mt="xl"
             type="submit"
             onClick={handleAddExpense}
-            disabled={form.values.name === ""}
+            disabled={form.values.name === "" && form.values.category === null}
           >
             Add to Expense
           </Button>
