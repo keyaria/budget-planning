@@ -6,15 +6,17 @@ import {
   CreateExpenseInput,
   DeleteExpenseInput,
   EditExpenseInput,
+  FilterQueryCategoryInput,
   FilterQueryInput,
   createCategoryInput,
+  editCategoryInput,
 } from "./expense-schema";
 
 // CATEGORY API
 export async function getCategories({
   filterQuery,
 }: {
-  filterQuery: FilterQueryInput;
+  filterQuery: FilterQueryCategoryInput;
 }) {
   try {
     const result = await prisma.category.findMany({
@@ -23,8 +25,8 @@ export async function getCategories({
         name: true,
         color: true,
       },
-      skip: filterQuery.skip,
-      take: filterQuery.take,
+      skip: filterQuery.pageIndex,
+      take: filterQuery.pageSize,
     });
 
     return {
@@ -52,6 +54,25 @@ export async function createCategory(data: createCategoryInput) {
       },
     });
     return { success: true, data: { category } };
+  } catch (error: any) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: error.message,
+    });
+  }
+}
+
+export async function editCategory(data: editCategoryInput) {
+  try {
+    const result = await prisma.category.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        color: data.color,
+      },
+    });
+
+    return { success: true, data: { result } };
   } catch (error: any) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",

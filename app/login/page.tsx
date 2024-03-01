@@ -99,7 +99,7 @@ export default function Login() {
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <TextInput
           label="Email"
-          placeholder="you@mantine.dev"
+          placeholder="you@gmail.com"
           {...form.getInputProps("email")}
           error={form.errors.email && "Invalid email"}
           required

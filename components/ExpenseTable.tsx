@@ -8,20 +8,17 @@ import {
 } from "mantine-react-table";
 
 import { useCustomTable } from "@/utils/hooks/use-custom-table";
-import {
-  ActionIcon,
-  Card,
-  Flex,
-  Stack,
-  Title,
-  Tooltip,
-  Text,
-  Button,
-  Menu,
-} from "@mantine/core";
+import { ActionIcon, Card, Flex, Tooltip, Text, Group } from "@mantine/core";
 import { ModalsProvider, modals } from "@mantine/modals";
 
-import { IconEdit, IconShare, IconTrash, IconUser } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconShare,
+  IconTrash,
+  IconUser,
+  IconArrowRight,
+  IconArrowLeft,
+} from "@tabler/icons-react";
 import { Expenses } from "@prisma/client";
 //import { deleteExpense } from "@/lib/actions";
 import { useMemo, useState } from "react";
@@ -46,7 +43,11 @@ type Category = {
   updated_at: string;
 };
 
-export default function ExpenseTable({ allExpenses }: any) {
+export default function ExpenseTable({
+  allExpenses,
+  setPagintion,
+  pagination,
+}: any) {
   const { mutate: editMutate } = trpc.editExpense.useMutation({
     // onSettled: () => {
     //   form.reset;
@@ -107,20 +108,6 @@ export default function ExpenseTable({ allExpenses }: any) {
     ],
     [],
   );
-  //UPDATE action
-  //   const handleSaveUser: MRT_TableOptions<Expenses>["onEditingRowSave"] =
-  //     async ({ values, table }) => {};
-
-  // const handleSaveRow: MRT_TableOptions<Expenses>['onEditingRowSave'] = ({
-  //    // exitEditingMode,
-  //     row,
-  //    // values
-  //   }) => {
-  //     console.log('entered', row.original)
-  //   // tableData[row.index] = row.original;
-  //     //setTableData([...tableData]);
-  //   //  exitEditingMode();
-  //   };
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Expenses>) =>
@@ -159,7 +146,12 @@ export default function ExpenseTable({ allExpenses }: any) {
     createDisplayMode: "modal",
     editDisplayMode: "modal",
     enableRowActions: true,
+    onPaginationChange: setPagintion,
     enableEditing: true,
+
+    state: {
+      pagination,
+    },
     getRowId: (row) => row.id,
 
     onEditingRowCancel: () => setValidationErrors({}),
@@ -173,45 +165,51 @@ export default function ExpenseTable({ allExpenses }: any) {
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Delete">
+          {/* @ts-ignore */}
           <ActionIcon color="red" onClick={() => openDeleteConfirmModal(row)}>
             <IconTrash />
           </ActionIcon>
         </Tooltip>
       </Flex>
     ),
-
-    // renderRowActions: ({ row, table }) => (
-    //   <Flex gap="md">
-    //     <Tooltip label="Edit">
-    //       <ActionIcon onClick={() => handleSaveRow}>
-    //         <IconEdit />
-    //       </ActionIcon>
-    //     </Tooltip>
-    //     <Tooltip label="Delete">
-    //       {/* @ts-ignore */}
-    //       <ActionIcon color="red" key={1} onClick={() => openDeleteConfirmModal(row)}>
-    //         <IconTrash />
-    //       </ActionIcon>
-    //     </Tooltip>
-    //   </Flex>
-    // ),
     initialState: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 5,
-      },
+      pagination: pagination,
     },
   });
+
+  const nextPage = async () => {
+    if (allExpenses) {
+      const lastPostInResults: any = allExpenses[0];
+      const myCursor = lastPostInResults.id;
+      setPagintion({ skip: 1, take: 1, myCursor: myCursor });
+    }
+  };
+
+  const prevPage = async () => {
+    if (allExpenses) {
+      const lastPostInResults: any = allExpenses[0];
+      const myCursor = lastPostInResults.id;
+
+      setPagintion({ skip: 0, take: 1, myCursor: myCursor });
+    }
+  };
 
   return (
     <Card title="Expenses">
       {/* @ts-ignore */}
-      <MantineReactTable
-        table={table}
-        data={allExpenses}
-        editDisplayMode="table"
-        enableEditing
-      />
+      <MantineReactTable table={table} data={allExpenses} enableEditing />
+
+      <Group justify="right">
+        <ActionIcon variant="filled" aria-label="Prev Page" onClick={prevPage}>
+          <IconArrowLeft style={{ width: "70%", height: "70%" }} stroke={1.5} />
+        </ActionIcon>
+        <ActionIcon variant="filled" aria-label="Next Page" onClick={nextPage}>
+          <IconArrowRight
+            style={{ width: "70%", height: "70%" }}
+            stroke={1.5}
+          />
+        </ActionIcon>
+      </Group>
     </Card>
   );
 }

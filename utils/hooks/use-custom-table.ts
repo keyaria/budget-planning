@@ -19,44 +19,15 @@ export type CustomTableOptions<TData extends Record<string, any> = {}> = Omit<
 export const useCustomTable = <TData extends Record<string, any> = {}>(
   tableOptions: CustomTableOptions<TData>,
 ) => {
-  // const handleSaveUser: MRT_TableOptions<User>['onEditingRowSave'] = async ({
-  //     values,
-  //     table,
-  //   }) => {
-  //     const newValidationErrors = validateUser(values);
-  //     if (Object.values(newValidationErrors).some((error) => error)) {
-  //       setValidationErrors(newValidationErrors);
-  //       return;
-  //     }
-  //     setValidationErrors({});
-  //     await updateUser(values);
-  //     table.setEditingRow(null); //exit editing mode
-  //   };
-
-  //   //DELETE action
-  //   const openDeleteConfirmModal = (row: MRT_Row<User>) =>
-  //     modals.openConfirmModal({
-  //       title: 'Are you sure you want to delete this user?',
-  //       children: (
-  //         <Text>
-  //           Are you sure you want to delete {row.original.firstName}{' '}
-  //           {row.original.lastName}? This action cannot be undone.
-  //         </Text>
-  //       ),
-  //       labels: { confirm: 'Delete', cancel: 'Cancel' },
-  //       confirmProps: { color: 'red' },
-  //       onConfirm: () => deleteUser(row.original.id),
-  //     });
   return useMantineReactTable({
     ...{
-      // paginationDisplayMode: "pages",
+      paginationDisplayMode: "custom",
       // // filters
       // manualFiltering: true,
       // // styles
       // mantineTableProps: {
       //   align: "center",
       // },
-      // positionActionsColumn: "last",
       mantinePaperProps: {
         shadow: "0",
         radius: "md",
@@ -65,9 +36,10 @@ export const useCustomTable = <TData extends Record<string, any> = {}>(
       },
       displayColumnDefOptions: {
         "mrt-row-actions": {
-          size: 500, //make actions column wider
+          size: 100, //make actions column wider
         },
       },
+      manualPagination: true,
       mantineFilterTextInputProps: {
         style: { borderBottom: "unset", marginTop: "8px" },
         variant: "filled",
@@ -78,7 +50,7 @@ export const useCustomTable = <TData extends Record<string, any> = {}>(
       },
 
       // features
-      // enableColumnActions: false,
+      enableColumnActions: false,
       // enableDensityToggle: false,
       // enableFullScreenToggle: false,
       // enableHiding: false,

@@ -3,13 +3,16 @@ import {
   createCategorySchema,
   createExpenseSchema,
   deleteExpenseSchema,
+  editCategorySchema,
   editExpenseSchema,
   filterQuery,
+  filterQueryCategory,
 } from "./expense-schema";
 import {
   addExpense,
   createCategory,
   deleteExpense,
+  editCategory,
   editExpense,
   getCategories,
   getData,
@@ -20,8 +23,11 @@ const expenseRouter = t.router({
     .input(createCategorySchema)
     .mutation(({ input }) => createCategory(input)),
   getCategory: t.procedure
-    .input(filterQuery)
+    .input(filterQueryCategory)
     .query(({ input }) => getCategories({ filterQuery: input })),
+  editCategory: t.procedure
+    .input(editCategorySchema)
+    .mutation(({ input }) => editCategory(input)),
 
   getExpenses: t.procedure
     .input(filterQuery)

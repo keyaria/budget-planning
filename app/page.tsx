@@ -16,6 +16,7 @@ import {
   Center,
   Stack,
   Avatar,
+  Group,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CategorySection from "@/components/CategorySection";
@@ -30,6 +31,7 @@ import { trpc } from "@/utils/trpc";
 import {
   IconHome2,
   IconLogout,
+  IconReceipt2,
   IconSwitchHorizontal,
 } from "@tabler/icons-react";
 import classes from "./page.module.css";
@@ -39,7 +41,15 @@ export default function Home() {
   const [opened, { toggle }] = useDisclosure();
   const [salesByMonth, setSalesByMonth]: any = useState(0);
   const [date, setdate] = useState();
-  const [pagination, setPagintion] = useState({ skip: 0, take: 1 });
+  const [pagination, setPagintion] = useState({
+    skip: 0,
+    take: 2,
+    myCursor: undefined,
+  });
+  const [categoryPagination, setCategoryPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
 
   // await prisma.post.findMany({
   //   skip: (resultsPerPage * currentPageNumber),
@@ -53,10 +63,7 @@ export default function Home() {
     refetch,
     error: expensesError,
   } = trpc.getExpenses.useQuery(pagination);
-  const { data: allCategories } = trpc.getCategory.useQuery({
-    skip: 0,
-    take: 5,
-  });
+  const { data: allCategories } = trpc.getCategory.useQuery(categoryPagination);
   const [value, setValue] = useState<string | null>("");
 
   const error = console.error;
@@ -110,16 +117,6 @@ export default function Home() {
     return;
   };
 
-  const nextPage = async () => {
-    if (allExpenses) {
-      const lastPostInResults: any = allExpenses.data.expenses[0];
-      setPagintion({ skip: 1, take: 1 });
-      // await getData({take: 2, skip: 1, myCursor: myCursor})
-      const myCursor = lastPostInResults.id;
-      //setAllExpenses(data);
-    }
-  };
-
   //if (isLoading || isFetching) return <p>Loading...</p>;
   const handleSelect = (value: any) => {
     setValue(value);
@@ -161,14 +158,18 @@ export default function Home() {
             <AddCategoryModal />
           </GridCol>
           <GridCol span={{ sm: 12, md: 12, lg: 4 }}>
-            <Card title={"Total Spent"}>
-              <Text>{salesByMonth && salesByMonth}</Text>
+            <Card title={"Total Expenses"}>
+              <Text size="xl"> ${salesByMonth}</Text>
             </Card>
             <Space h="md" />
 
             <Card title={"Categories"}>
               {allCategories && allCategories.data.result.length !== 0 && (
-                <CategorySection categories={allCategories.data.result} />
+                <CategorySection
+                  categories={allCategories.data.result}
+                  pagination={categoryPagination}
+                  setPagination={setCategoryPagination}
+                />
               )}
             </Card>
           </GridCol>
@@ -201,7 +202,6 @@ export default function Home() {
               setPagintion={setPagintion}
             />
             <Space h="md" />
-            <Button onClick={nextPage}>Next Page</Button>
           </GridCol>
         </Grid>
       </AppShell.Main>

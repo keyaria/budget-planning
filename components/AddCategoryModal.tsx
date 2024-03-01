@@ -63,15 +63,11 @@ export default function addModal() {
               label="Name"
               placeholder="Name"
               {...form.getInputProps("name")}
+              error={form.errors.name && "Duplicate Category"}
             />
             <ColorInput
               label="Color"
               placeholder="Red"
-              {...form.getInputProps("color")}
-            />
-            <TextInput
-              label="Color"
-              placeholder="Color"
               {...form.getInputProps("color")}
             />
             <Space h="md" />
