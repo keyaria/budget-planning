@@ -169,7 +169,7 @@ export async function editExpense(data: EditExpenseInput) {
     const result = await prisma.expenses.update({
       where: { id: data.id },
       data: {
-        name: data.id,
+        name: data.name,
         amount: data.amount,
         notes: data.notes,
       },

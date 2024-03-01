@@ -6,7 +6,6 @@ import {
   MRT_TableOptions,
   MantineReactTable,
 } from "mantine-react-table";
-import { DataTable } from "mantine-datatable";
 
 import { useCustomTable } from "@/utils/hooks/use-custom-table";
 import {
@@ -28,6 +27,7 @@ import { Expenses } from "@prisma/client";
 import { useMemo, useState } from "react";
 import queryClient from "@/utils/query-client";
 import { trpc } from "@/utils/trpc";
+import { editExpense } from "@/lib/actions";
 
 type Expense = {
   id: string;
@@ -47,6 +47,20 @@ type Category = {
 };
 
 export default function ExpenseTable({ allExpenses }: any) {
+  const { mutate: editMutate } = trpc.editExpense.useMutation({
+    // onSettled: () => {
+    //   form.reset;
+    // },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [
+          ["getExpense"],
+          { input: { take: 5, skip: 0 }, type: "query" },
+        ],
+      });
+    },
+  });
+
   const [tableData, setTableData] = useState(allExpenses);
 
   const [validationErrors, setValidationErrors] = useState<
@@ -64,6 +78,10 @@ export default function ExpenseTable({ allExpenses }: any) {
   });
   const columns = useMemo<MRT_ColumnDef<Expense>[]>(
     () => [
+      {
+        accessorKey: "id",
+        header: "ID",
+      },
       {
         accessorKey: "name",
         header: "Title",
@@ -124,6 +142,8 @@ export default function ExpenseTable({ allExpenses }: any) {
     row,
     values,
   }) => {
+    console.log("values", values, row);
+    editMutate(values);
     //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
     tableData[row.index] = values;
     //send/receive api updates here

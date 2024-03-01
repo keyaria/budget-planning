@@ -1,5 +1,12 @@
 import { useForm } from "@mantine/form";
-import { TextInput, Box, Button, Modal, Space } from "@mantine/core";
+import {
+  TextInput,
+  Box,
+  Button,
+  Modal,
+  Space,
+  ColorInput,
+} from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -12,6 +19,7 @@ interface FormValues {
 }
 
 export default function addModal() {
+  //Add validation. Must be unique sent from DB add error message and
   const { mutate, isLoading, error } = trpc.createCategory.useMutation({
     onSettled: () => {
       form.reset;
@@ -55,6 +63,11 @@ export default function addModal() {
               label="Name"
               placeholder="Name"
               {...form.getInputProps("name")}
+            />
+            <ColorInput
+              label="Color"
+              placeholder="Red"
+              {...form.getInputProps("color")}
             />
             <TextInput
               label="Color"
