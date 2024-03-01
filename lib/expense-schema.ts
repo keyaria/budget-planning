@@ -3,7 +3,7 @@ import { TypeOf, any, number, object, string, z } from "zod";
 export const createExpenseSchema = object({
   name: string({ required_error: "Name is required" }),
   amount: number().default(0),
-  date: string().datetime(),
+  date: z.date(),
   notes: z.optional(z.string()),
   category: z.object({
     id: z.string(),

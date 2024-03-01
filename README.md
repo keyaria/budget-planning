@@ -11,7 +11,6 @@ TODO:
 
 ## Getting Started
 
-
 1. First, install the packages
 
 ```bash
@@ -36,16 +35,15 @@ pnpm dev
 bun dev
 ```
 
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Log In Test User
+
 Link to information for env file: https://docs.google.com/document/d/1_y8B_il5FGY1lNv15eS6pXflb-MJNSwpVTM0TqvuTg4/edit?usp=sharing
 email: testuser@gmail.com
 password: "testpassword"
-
 
 ## Process
 
@@ -59,14 +57,15 @@ password: "testpassword"
 ### Time
 
 ### Improvements
+
 - Add more validation on the frontEnd Side
-- Create A better central user managament system 
+- Create A better central user managament system
 - Add converter for money and handler to deal with cash inputs.
 - Add Cypress and Jest testing so there is E2E tests
 
 ### Known Issues
-- Edit Modal
 
+- Edit Modal
 
 ## Technical Stack
 
@@ -75,4 +74,3 @@ password: "testpassword"
 - tRPC
 - NextJS
 - Mantine UI
-

@@ -12,7 +12,7 @@ interface FormValues {
 }
 
 export default function addModal() {
-  const { mutate } = trpc.createCategory.useMutation({
+  const { mutate, isLoading, error } = trpc.createCategory.useMutation({
     onSettled: () => {
       form.reset;
     },

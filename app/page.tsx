@@ -13,6 +13,9 @@ import {
   Tooltip,
   UnstyledButton,
   rem,
+  Center,
+  Stack,
+  Avatar,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CategorySection from "@/components/CategorySection";
@@ -24,18 +27,32 @@ import ExpenseTable from "@/components/ExpenseTable";
 import Card from "@/components/common/Card";
 import AddCategoryModal from "@/components/AddCategoryModal";
 import { trpc } from "@/utils/trpc";
-import { IconHome2 } from "@tabler/icons-react";
+import {
+  IconHome2,
+  IconLogout,
+  IconSwitchHorizontal,
+} from "@tabler/icons-react";
+import classes from "./page.module.css";
+import Navbar from "@/components/Navbar";
 
 export default function Home() {
   const [opened, { toggle }] = useDisclosure();
   const [salesByMonth, setSalesByMonth]: any = useState(0);
   const [date, setdate] = useState();
+  const [pagination, setPagintion] = useState({ skip: 0, take: 1 });
+
+  // await prisma.post.findMany({
+  //   skip: (resultsPerPage * currentPageNumber),
+  //   take: resultsPerPage,
+  //   ...
+  // })
   const {
     data: allExpenses,
     isLoading: loadingExpenses,
     isError,
+    refetch,
     error: expensesError,
-  } = trpc.getExpenses.useQuery({ skip: 0, take: 5 });
+  } = trpc.getExpenses.useQuery(pagination);
   const { data: allCategories } = trpc.getCategory.useQuery({
     skip: 0,
     take: 5,
@@ -92,10 +109,11 @@ export default function Home() {
     setdate(chartData);
     return;
   };
+
   const nextPage = async () => {
     if (allExpenses) {
       const lastPostInResults: any = allExpenses.data.expenses[0];
-
+      setPagintion({ skip: 1, take: 1 });
       // await getData({take: 2, skip: 1, myCursor: myCursor})
       const myCursor = lastPostInResults.id;
       //setAllExpenses(data);
@@ -125,22 +143,15 @@ export default function Home() {
         overlayProps={{ radius: "sm", blur: 2 }}
       />
 
-      <AppShell.Header></AppShell.Header>
+      <AppShell.Header bg={"rgb(248, 249, 250)"}>
+        <Flex justify="right" align="center" px="1em" h="100%">
+          <Avatar radius="xl" />
 
-      <AppShell.Navbar p="md" bg={"rgb(248, 249, 250)"}>
-        <Tooltip
-          label={"Home"}
-          position="right"
-          transitionProps={{ duration: 0 }}
-        >
-          <UnstyledButton>
-            <IconHome2
-              style={{ width: rem(20), height: rem(20) }}
-              stroke={1.5}
-            />
-          </UnstyledButton>
-        </Tooltip>
-      </AppShell.Navbar>
+          <Text>Sign Out</Text>
+        </Flex>
+      </AppShell.Header>
+
+      <Navbar />
 
       <AppShell.Main>
         <Grid>
@@ -184,7 +195,11 @@ export default function Home() {
           </GridCol>
 
           <GridCol span={12}>
-            <ExpenseTable allExpenses={allExpenses?.data.expenses} />
+            <ExpenseTable
+              allExpenses={allExpenses?.data.expenses}
+              pagination={pagination}
+              setPagintion={setPagintion}
+            />
             <Space h="md" />
             <Button onClick={nextPage}>Next Page</Button>
           </GridCol>

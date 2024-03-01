@@ -4,7 +4,10 @@ import {
   MRT_Row,
   MRT_Table,
   MRT_TableOptions,
+  MantineReactTable,
 } from "mantine-react-table";
+import { DataTable } from "mantine-datatable";
+
 import { useCustomTable } from "@/utils/hooks/use-custom-table";
 import {
   ActionIcon,
@@ -15,13 +18,14 @@ import {
   Tooltip,
   Text,
   Button,
+  Menu,
 } from "@mantine/core";
 import { ModalsProvider, modals } from "@mantine/modals";
 
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconShare, IconTrash, IconUser } from "@tabler/icons-react";
 import { Expenses } from "@prisma/client";
 //import { deleteExpense } from "@/lib/actions";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import queryClient from "@/utils/query-client";
 import { trpc } from "@/utils/trpc";
 
@@ -43,6 +47,8 @@ type Category = {
 };
 
 export default function ExpenseTable({ allExpenses }: any) {
+  const [tableData, setTableData] = useState(allExpenses);
+
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
@@ -56,33 +62,48 @@ export default function ExpenseTable({ allExpenses }: any) {
       });
     },
   });
-  const columns: MRT_ColumnDef<Expense>[] = [
-    {
-      accessorKey: "name",
-      header: "Title",
-    },
-    {
-      accessorKey: "amount",
-      header: "Amount",
-    },
-    {
-      accessorKey: "date",
-      accessorFn: (row) => row.date.toLocaleString(),
-      header: "Date",
-    },
-    {
-      accessorKey: "notes",
-      header: "Notes",
-    },
-    {
-      accessorKey: "category",
-      accessorFn: (row) => row.category.name,
-      header: "Category",
-    },
-  ];
+  const columns = useMemo<MRT_ColumnDef<Expense>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Title",
+      },
+      {
+        accessorKey: "amount",
+        header: "Amount",
+      },
+      {
+        accessorKey: "date",
+        accessorFn: (row) => row.date.toLocaleString(),
+        header: "Date",
+      },
+      {
+        accessorKey: "notes",
+        header: "Notes",
+      },
+      {
+        accessorKey: "category",
+        accessorFn: (row) => row.category.name,
+        header: "Category",
+      },
+    ],
+    [],
+  );
   //UPDATE action
-  const handleSaveUser: MRT_TableOptions<Expenses>["onEditingRowSave"] =
-    async ({ values, table }) => {};
+  //   const handleSaveUser: MRT_TableOptions<Expenses>["onEditingRowSave"] =
+  //     async ({ values, table }) => {};
+
+  // const handleSaveRow: MRT_TableOptions<Expenses>['onEditingRowSave'] = ({
+  //    // exitEditingMode,
+  //     row,
+  //    // values
+  //   }) => {
+  //     console.log('entered', row.original)
+  //   // tableData[row.index] = row.original;
+  //     //setTableData([...tableData]);
+  //   //  exitEditingMode();
+  //   };
+
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Expenses>) =>
     modals.openConfirmModal({
@@ -98,7 +119,17 @@ export default function ExpenseTable({ allExpenses }: any) {
       onConfirm: () => mutate({ id: row.original.id }),
     });
 
-  const handleCreateUser = () => {};
+  const handleSaveRow: MRT_TableOptions<Expense>["onEditingRowSave"] = async ({
+    table,
+    row,
+    values,
+  }) => {
+    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
+    tableData[row.index] = values;
+    //send/receive api updates here
+    setTableData([...tableData]);
+    table.setEditingRow(null); //exit editing mode
+  };
   const table = useCustomTable({
     // @ts-ignore
     columns,
@@ -111,20 +142,9 @@ export default function ExpenseTable({ allExpenses }: any) {
     enableEditing: true,
     getRowId: (row) => row.id,
 
-    onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateUser,
     onEditingRowCancel: () => setValidationErrors({}),
-    onEditingRowSave: handleSaveUser,
+    onEditingRowSave: handleSaveRow,
 
-    renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
-      <Stack>
-        <Title order={3}>Edit User</Title>
-        {internalEditComponents}
-        <Flex justify="flex-end" mt="xl">
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
-        </Flex>
-      </Stack>
-    ),
     renderRowActions: ({ row, table }) => (
       <Flex gap="md">
         <Tooltip label="Edit">
@@ -133,13 +153,28 @@ export default function ExpenseTable({ allExpenses }: any) {
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Delete">
-          {/* @ts-ignore */}
           <ActionIcon color="red" onClick={() => openDeleteConfirmModal(row)}>
             <IconTrash />
           </ActionIcon>
         </Tooltip>
       </Flex>
     ),
+
+    // renderRowActions: ({ row, table }) => (
+    //   <Flex gap="md">
+    //     <Tooltip label="Edit">
+    //       <ActionIcon onClick={() => handleSaveRow}>
+    //         <IconEdit />
+    //       </ActionIcon>
+    //     </Tooltip>
+    //     <Tooltip label="Delete">
+    //       {/* @ts-ignore */}
+    //       <ActionIcon color="red" key={1} onClick={() => openDeleteConfirmModal(row)}>
+    //         <IconTrash />
+    //       </ActionIcon>
+    //     </Tooltip>
+    //   </Flex>
+    // ),
     initialState: {
       pagination: {
         pageIndex: 0,
@@ -150,7 +185,13 @@ export default function ExpenseTable({ allExpenses }: any) {
 
   return (
     <Card title="Expenses">
-      <MRT_Table table={table} />
+      {/* @ts-ignore */}
+      <MantineReactTable
+        table={table}
+        data={allExpenses}
+        editDisplayMode="table"
+        enableEditing
+      />
     </Card>
   );
 }

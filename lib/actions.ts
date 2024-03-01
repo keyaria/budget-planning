@@ -149,7 +149,7 @@ export async function addExpense(data: CreateExpenseInput) {
         category: {
           connect: { id: data.category.id },
         },
-        name: data.category.name,
+        name: data.name,
         amount: data.amount,
         date: data.date,
         notes: data.notes,

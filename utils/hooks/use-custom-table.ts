@@ -49,14 +49,14 @@ export const useCustomTable = <TData extends Record<string, any> = {}>(
   //     });
   return useMantineReactTable({
     ...{
-      paginationDisplayMode: "pages",
-      // filters
-      manualFiltering: true,
-      // styles
-      mantineTableProps: {
-        align: "center",
-      },
-      positionActionsColumn: "last",
+      // paginationDisplayMode: "pages",
+      // // filters
+      // manualFiltering: true,
+      // // styles
+      // mantineTableProps: {
+      //   align: "center",
+      // },
+      // positionActionsColumn: "last",
       mantinePaperProps: {
         shadow: "0",
         radius: "md",
@@ -78,16 +78,16 @@ export const useCustomTable = <TData extends Record<string, any> = {}>(
       },
 
       // features
-      enableColumnActions: false,
-      enableDensityToggle: false,
-      enableFullScreenToggle: false,
-      enableHiding: false,
-      enablePinning: false,
+      // enableColumnActions: false,
+      // enableDensityToggle: false,
+      // enableFullScreenToggle: false,
+      // enableHiding: false,
+      // enablePinning: false,
 
       // states
-      initialState: {
-        density: "md",
-      },
+      // initialState: {
+      //   density: "md",
+      // },
       columns: [],
       data: [],
     },

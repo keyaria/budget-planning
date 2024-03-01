@@ -63,12 +63,12 @@ export default function addModal({ categories }: any) {
   const handleAddExpense = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    let cat = select.find((i) => {
+    let cat = categories.find((i: any) => {
       return i["name"] === form.values.category;
     });
-
+    console.log("cate", categories, form.values.category);
     // @ts-ignore
-    form.values.category = cat.id;
+    form.values.category = cat;
 
     //@ts-ignore
     mutate(form.values);

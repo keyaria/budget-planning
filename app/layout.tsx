@@ -9,19 +9,21 @@ import {
   MantineProvider,
   ColorSchemeScript,
   MantineColorsTuple,
+  Button,
 } from "@mantine/core";
 import { TrpcProvider } from "@/utils/trpc-provider";
 import { ModalsProvider } from "@mantine/modals";
 //import "./globals.css";
+import classes from "./page.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Budget Tracking App",
-  description: "Budget Tracking Appplication",
-};
+// export const metadata: Metadata = {
+//   title: "Budget Tracking App",
+//   description: "Budget Tracking Appplication",
+// };
 const myColor: MantineColorsTuple = [
-  "#ebfeff",
+  "#04A7AE",
   "#d8fafc",
   "#acf7fa",
   "#80f3f8",
@@ -33,9 +35,41 @@ const myColor: MantineColorsTuple = [
   "#04a3aa",
 ];
 const theme = createTheme({
+  // autoContrast: true,
+
   colors: {
-    myColor,
+    blue: [
+      "#7AD1DD",
+      "#5FCCDB",
+      "#44CADC",
+      "#2AC9DE",
+      "#1AC2D9",
+      "#11B7CD",
+      "#09ADC3",
+      "#0E99AC",
+      "#128797",
+      "#147885",
+    ],
+    "ocean-blue": [
+      "#7AD1DD",
+      "#5FCCDB",
+      "#44CADC",
+      "#2AC9DE",
+      "#1AC2D9",
+      "#11B7CD",
+      "#09ADC3",
+      "#0E99AC",
+      "#128797",
+      "#147885",
+    ],
   },
+  primaryColor: "blue",
+
+  // components: {
+  //   Button: Button.extend({
+  //     classNames: classes,
+  //   }),
+  // },
 });
 
 export default function RootLayout({
